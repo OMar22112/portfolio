@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://omar-abo-elmaaty.vercel.app";
+const siteUrl = "https://portfolio-azure-eight-54.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

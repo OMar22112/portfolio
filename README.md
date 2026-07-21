@@ -2,7 +2,7 @@
 
 Personal portfolio site for **Omar Abo-Elmaaty**, a Full-Stack Developer (front-end focused) specializing in React, Next.js, and TypeScript.
 
-Live: _add your Vercel URL here_
+Live: **https://portfolio-azure-eight-54.vercel.app**
 
 ## Features
 

@@ -11,8 +11,8 @@ export const CV = {
   contact: {
     phone: "+201066206278",
     email: "omaraboulmaaty.11@gmail.com",
-    linkedin: "https://www.linkedin.com/in/omar-abo-elmaaty-frontend-developer/",
-    github: "https://github.com/omaraboulmaaty",
+    linkedin: "https://www.linkedin.com/in/omar-aboulmaaty-983b66277",
+    github: "https://github.com/OMar22112",
     phoneHref: "tel:+201066206278",
     emailHref: "mailto:omaraboulmaaty.11@gmail.com",
   },
