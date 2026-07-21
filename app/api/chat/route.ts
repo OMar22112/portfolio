@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-import { SYSTEM_PROMPT } from "@/lib/data";
 import { generateLocalResponse } from "@/lib/chat";
-
-const apiKey = process.env.ANTHROPIC_API_KEY;
-const anthropic = apiKey ? new Anthropic({ apiKey }) : null;
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,23 +13,7 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // If an Anthropic API key is configured, use Claude for richer answers.
-    if (anthropic) {
-      const response = await anthropic.messages.create({
-        model: "claude-sonnet-5",
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages,
-      });
-
-      const content =
-        response.content.find((block) => block.type === "text")?.text ||
-        "I'm not sure how to answer that.";
-
-      return NextResponse.json({ role: "assistant", content });
-    }
-
-    // Fallback: answer directly from the CV without any external API call.
+    // Answer directly from the CV — no external AI model or API key required.
     const content = generateLocalResponse(messages);
     return NextResponse.json({ role: "assistant", content });
   } catch (error) {
