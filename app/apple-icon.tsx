@@ -14,15 +14,16 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #22D3EE 0%, #818CF8 100%)",
+          background: "#B9DBB0",
           borderRadius: 40,
-          color: "#0A0A0F",
-          fontSize: 118,
-          fontWeight: 700,
+          color: "#0E100F",
+          fontSize: 84,
+          letterSpacing: -5,
+          fontWeight: 800,
           fontFamily: "sans-serif",
         }}
       >
-        O
+        OA
       </div>
     ),
     { ...size }

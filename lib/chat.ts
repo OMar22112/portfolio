@@ -2,6 +2,14 @@ import { CV } from "./data";
 
 const intents = [
   {
+    id: "capabilities",
+    keywords: ["capabilit", "what can he do", "what does he do", "specialt", "focus"],
+    response: () =>
+      `Omar works across three areas:\n\n${CV.capabilities
+        .map((c) => `${c.title} (${c.tools.join(", ")}): ${c.body}`)
+        .join("\n")}`,
+  },
+  {
     id: "greeting",
     keywords: ["hi", "hello", "hey", "howdy", "greetings"],
     response: `Hi! I'm Omar's portfolio assistant. I can answer questions about his skills, work experience, projects, education, or how to contact him. What would you like to know?`,
@@ -48,7 +56,7 @@ const intents = [
             }`
         )
         .join("\n");
-      return `Omar has worked on several projects:\n\n${projects}\n\nAsk me about any specific project for more details.`;
+      return `Omar has shipped several production AI projects:\n\n${projects}\n\nAsk me about any specific project for more details.`;
     },
   },
   {
@@ -69,6 +77,10 @@ const intents = [
 ];
 
 const projectKeywords: Record<string, string> = {
+  arator: "Arator",
+  "ai employee": "Arator",
+  opener: "Opener",
+  reddit: "Opener",
   hiraku: "HIRAKU Agent",
   "excel-smart": "Excel-Smart",
   "excel smart": "Excel-Smart",
@@ -78,8 +90,6 @@ const projectKeywords: Record<string, string> = {
   "bnk": "BNK-BAIA Agent",
   "baia": "BNK-BAIA Agent",
   compliance: "Compliance-AI",
-  "saas marketing": "SaaS-Marketing-Reply",
-  "marketing reply": "SaaS-Marketing-Reply",
   reconstruction: "Reconstruction-Copilot",
 };
 

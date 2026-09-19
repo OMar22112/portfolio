@@ -1,40 +1,22 @@
-import { CV } from "@/lib/data";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { cardProjects, featuredProject, listProjects, type Project } from "@/lib/data";
+import { ClipReveal, Reveal, Stagger, StaggerItem, TextReveal } from "@/components/motion/Reveal";
+import { ExcelSmartMock } from "@/components/mocks/ExcelSmartMock";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { Activity, ArrowRight, ArrowUpRight, ShieldCheck, TriangleAlert } from "lucide-react";
 
-const featured = CV.projects.filter((p) => p.featured);
-const rest = CV.projects.filter((p) => !p.featured);
+const FEATURE_ICONS = {
+  activity: Activity,
+  alert: TriangleAlert,
+  shield: ShieldCheck,
+} as const;
 
-function SectionHeading({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
-  title: string;
-  description?: string;
-}) {
+function TechRow({ tech, className = "" }: { tech: string[]; className?: string }) {
   return (
-    <Reveal className="mb-14 max-w-2xl">
-      <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent">
-        {eyebrow}
-      </p>
-      <h2 className="font-display text-3xl font-bold tracking-tight text-fg md:text-5xl">
-        {title}
-      </h2>
-      {description && <p className="mt-4 text-lg text-muted text-pretty">{description}</p>}
-    </Reveal>
-  );
-}
-
-function TechPills({ tech }: { tech: string[] }) {
-  return (
-    <ul className="flex flex-wrap gap-2">
-      {tech.map((t) => (
-        <li
-          key={t}
-          className="rounded-full border border-border bg-bg/60 px-2.5 py-1 font-mono text-xs text-muted"
-        >
+    <ul className={`flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-muted ${className}`}>
+      {tech.map((t, i) => (
+        <li key={t} className="flex items-center gap-2.5">
+          {i > 0 && <span aria-hidden="true" className="text-border">·</span>}
           {t}
         </li>
       ))}
@@ -42,125 +24,235 @@ function TechPills({ tech }: { tech: string[] }) {
   );
 }
 
-export function Projects() {
+function Shot({ project, sizes, delay = 0 }: { project: Project; sizes: string; delay?: number }) {
   return (
-    <section id="work" className="scroll-mt-24 px-6 py-24 md:px-10 md:py-32">
-      <div className="mx-auto w-full max-w-content">
-        <SectionHeading
-          eyebrow="Selected Work"
-          title="Projects that shipped."
-          description="Production-grade, AI-powered web apps — built end to end, from design fidelity to hardened deploys."
-        />
-
-        {/* Featured case studies */}
-        <div className="space-y-6">
-          {featured.map((project, index) => (
-            <Reveal key={project.name} delay={index * 0.05}>
-              <article className="card group grid overflow-hidden lg:grid-cols-[1.1fr_1fr]">
-                {/* Text side */}
-                <div className="order-2 flex flex-col p-7 md:p-10 lg:order-1">
-                  <div className="mb-4 flex items-center gap-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-                      <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-                      Featured
-                    </span>
-                    <span className="font-mono text-xs text-muted">{project.date}</span>
-                  </div>
-
-                  <h3 className="font-display text-2xl font-bold text-fg md:text-3xl">
-                    {project.name}
-                  </h3>
-                  <p className="mt-2 text-lg text-muted text-pretty">{project.tagline}</p>
-
-                  <ul className="mt-6 space-y-2.5">
-                    {project.bullets.slice(0, 3).map((bullet, i) => (
-                      <li key={i} className="flex gap-3 text-sm leading-relaxed text-muted">
-                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-7 flex-1" />
-                  <div className="mt-6 border-t border-border pt-6">
-                    <TechPills tech={project.tech} />
-                  </div>
-
-                  {project.preview && (
-                    <a
-                      href={project.preview}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-accent transition-colors hover:text-fg"
-                    >
-                      {project.preview.includes("drive.google") ? "View preview" : "Visit live site"}
-                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </a>
-                  )}
-                </div>
-
-                {/* Visual side — highlight tiles */}
-                <div className="relative order-1 overflow-hidden border-b border-border bg-gradient-to-br from-surface to-bg p-7 md:p-10 lg:order-2 lg:border-b-0 lg:border-l">
-                  <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/10 blur-3xl transition-opacity duration-500 group-hover:opacity-80" />
-                  <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-accent-2/10 blur-3xl" />
-
-                  <p className="relative mb-4 font-mono text-xs uppercase tracking-widest text-muted">
-                    Highlights
-                  </p>
-                  <div className="relative grid grid-cols-2 gap-3">
-                    {project.highlights.map((h) => (
-                      <div
-                        key={h}
-                        className="rounded-xl border border-border bg-bg/50 p-4 text-sm font-medium text-fg backdrop-blur"
-                      >
-                        {h}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            </Reveal>
-          ))}
+    <ClipReveal delay={delay}>
+      {project.image ? (
+        <div className="shot aspect-[16/10] w-full">
+          <Image
+            src={project.image.src}
+            alt={project.image.alt}
+            width={project.image.width}
+            height={project.image.height}
+            sizes={sizes}
+            className="h-full w-full object-cover object-top"
+          />
         </div>
+      ) : (
+        <div className="shot-zoom">
+          <ExcelSmartMock />
+        </div>
+      )}
+    </ClipReveal>
+  );
+}
 
-        {/* More projects — bento grid */}
-        <Reveal className="mb-8 mt-16">
-          <h3 className="font-display text-xl font-semibold text-fg">More projects</h3>
-        </Reveal>
+function previewLabel(url?: string) {
+  if (!url) return null;
+  return url.includes("drive.google") ? "Watch demo" : "Visit live site";
+}
 
-        <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {rest.map((project) => {
-            const Wrapper = project.preview ? "a" : "div";
+function FeaturedCard({ project }: { project: Project }) {
+  return (
+    <article className="card group overflow-hidden">
+      <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.5fr)] lg:gap-10 lg:p-10">
+        <Stagger className="flex flex-col" stagger={0.1}>
+          <StaggerItem>
+            <span className="eyebrow inline-flex w-fit items-center rounded-sm border border-accent/50 px-2.5 py-1.5 text-accent">
+              Featured case study
+            </span>
+          </StaggerItem>
+          <StaggerItem>
+            <h3 className="display mt-7 text-4xl text-fg md:text-5xl">{project.name}</h3>
+            <p className="mt-2 text-xl text-fg/85">{project.kicker}</p>
+          </StaggerItem>
+          <StaggerItem>
+            <p className="mt-6 max-w-sm leading-relaxed text-muted text-pretty">{project.tagline}</p>
+          </StaggerItem>
+          <StaggerItem className="mt-auto pt-8">
+            <TechRow tech={project.techShort} />
+            {project.preview && (
+              <a
+                href={project.preview}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-fg"
+              >
+                {previewLabel(project.preview)}
+                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+            )}
+          </StaggerItem>
+        </Stagger>
+        <Shot project={project} sizes="(min-width: 1024px) 720px, 100vw" delay={0.15} />
+      </div>
+
+      {project.features && (
+        <Stagger as="ul" className="grid border-t border-border sm:grid-cols-3" stagger={0.12}>
+          {project.features.map((f) => {
+            const Icon = FEATURE_ICONS[f.icon];
             return (
-              <StaggerItem key={project.name} as="article">
-                <Wrapper
-                  {...(project.preview
-                    ? {
-                        href: project.preview,
-                        target: "_blank",
-                        rel: "noopener noreferrer",
-                      }
-                    : {})}
-                  className="card group flex h-full flex-col p-6"
-                >
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <h4 className="font-display text-lg font-bold text-fg">
-                      {project.name}
-                    </h4>
-                    {project.preview && (
-                      <ArrowUpRight className="h-5 w-5 shrink-0 text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
-                    )}
-                  </div>
-                  <p className="mb-5 text-sm text-muted text-pretty">{project.tagline}</p>
-                  <div className="mt-auto">
-                    <TechPills tech={project.tech.slice(0, 4)} />
-                    <p className="mt-4 font-mono text-xs text-muted">{project.date}</p>
-                  </div>
-                </Wrapper>
+              <StaggerItem
+                key={f.title}
+                as="li"
+                className="flex gap-4 border-b border-border p-6 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 lg:px-8"
+              >
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border text-fg transition-colors duration-300 group-hover:border-accent/40 group-hover:text-accent">
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="font-medium text-fg">{f.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted text-pretty">{f.body}</p>
+                </div>
               </StaggerItem>
             );
           })}
         </Stagger>
+      )}
+    </article>
+  );
+}
+
+function GridCard({ project }: { project: Project }) {
+  const Wrapper = project.preview ? "a" : "div";
+  return (
+    <Wrapper
+      {...(project.preview
+        ? { href: project.preview, target: "_blank", rel: "noopener noreferrer" }
+        : {})}
+      className="card card-link group flex h-full flex-col p-4 sm:p-5"
+    >
+      <Shot project={project} sizes="(min-width: 1024px) 560px, 100vw" />
+      <div className="flex flex-1 flex-col px-1 pt-5">
+        <h3 className="font-display text-xl font-semibold text-fg">{project.name}</h3>
+        <p className="mt-1.5 text-muted text-pretty">{project.tagline}</p>
+        <div className="mt-auto flex items-center justify-between pt-5">
+          <TechRow tech={project.techShort} />
+          {project.preview && (
+            <ArrowRight
+              className="h-5 w-5 text-fg transition-transform duration-300 group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          )}
+        </div>
+      </div>
+    </Wrapper>
+  );
+}
+
+function WideCard({ project }: { project: Project }) {
+  return (
+    <article className="card group grid gap-6 p-4 sm:p-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)] lg:gap-10">
+      <Shot project={project} sizes="(min-width: 1024px) 760px, 100vw" />
+      <Stagger className="flex flex-col px-1 py-2 lg:py-4 lg:pr-4" delayChildren={0.2}>
+        <StaggerItem>
+          <h3 className="display text-3xl text-fg">{project.name}</h3>
+          <p className="mt-2 text-muted text-pretty">{project.tagline}</p>
+        </StaggerItem>
+        <StaggerItem>
+          <TechRow tech={project.techShort} className="mt-6" />
+        </StaggerItem>
+        {project.preview && (
+          <StaggerItem>
+            <a
+              href={project.preview}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-underline group/link mt-6 inline-flex items-center gap-2 text-sm font-medium text-fg"
+            >
+              View case study
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 group-hover/link:translate-x-1"
+                aria-hidden="true"
+              />
+            </a>
+          </StaggerItem>
+        )}
+      </Stagger>
+    </article>
+  );
+}
+
+export function Projects() {
+  const [cardA, cardB, wide] = cardProjects;
+  const total = 1 + cardProjects.length;
+
+  return (
+    <section id="work" className="scroll-mt-16 border-b border-border py-16 md:py-24">
+      <div className="container-x">
+        <Reveal>
+          <p className="eyebrow text-muted">01 — {String(total).padStart(2, "0")}</p>
+        </Reveal>
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-6">
+          <TextReveal
+            text="Selected engineering work."
+            className="display text-4xl text-fg sm:text-5xl md:text-6xl"
+          />
+          <Reveal delay={0.4}>
+            <SectionLabel>Real ideas. Real products.</SectionLabel>
+          </Reveal>
+        </div>
+
+        <div className="mt-10 space-y-5 md:mt-14">
+          <Reveal>
+            <FeaturedCard project={featuredProject} />
+          </Reveal>
+
+          <Stagger className="grid gap-5 lg:grid-cols-2" stagger={0.15}>
+            {[cardA, cardB].map((p) => (
+              <StaggerItem key={p.slug} as="article" className="h-full">
+                <GridCard project={p} />
+              </StaggerItem>
+            ))}
+          </Stagger>
+
+          {wide && (
+            <Reveal>
+              <WideCard project={wide} />
+            </Reveal>
+          )}
+        </div>
+
+        {/* Compact list of earlier work */}
+        <div className="mt-16 md:mt-20">
+          <Reveal>
+            <div className="flex items-center justify-between gap-6">
+              <p className="eyebrow text-muted">More projects</p>
+              <SectionLabel>A few more things I&rsquo;ve built.</SectionLabel>
+            </div>
+          </Reveal>
+          <Stagger as="ul" className="mt-5 border-t border-border" stagger={0.07}>
+            {listProjects.map((project) => {
+              const Row = project.preview ? "a" : "div";
+              return (
+                <StaggerItem key={project.slug} as="li" className="border-b border-border">
+                  <Row
+                    {...(project.preview
+                      ? { href: project.preview, target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                    className="group -mx-3 grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1 rounded-md px-3 py-4 transition-colors duration-300 hover:bg-surface sm:grid-cols-[13rem_1fr_auto] md:grid-cols-[16rem_1fr_auto]"
+                  >
+                    <span className="font-medium text-fg">{project.name}</span>
+                    <span className="col-span-2 text-sm text-muted sm:col-span-1">
+                      {project.summary}
+                    </span>
+                    <span className="col-start-2 row-start-1 flex items-center gap-3 sm:col-start-3">
+                      <span className="hidden font-mono text-xs text-muted md:inline">{project.date}</span>
+                      {project.preview ? (
+                        <ArrowRight
+                          className="h-4 w-4 text-fg transition-transform duration-300 group-hover:translate-x-1"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <span className="w-4" />
+                      )}
+                    </span>
+                  </Row>
+                </StaggerItem>
+              );
+            })}
+          </Stagger>
+        </div>
       </div>
     </section>
   );

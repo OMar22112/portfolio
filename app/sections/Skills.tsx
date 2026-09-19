@@ -1,60 +1,55 @@
 import { CV } from "@/lib/data";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
+import { Reveal, Stagger, StaggerItem, TextReveal } from "@/components/motion/Reveal";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { SkillChip } from "@/components/ui/SkillChip";
+import { SkillsMarquee } from "@/components/SkillsMarquee";
+import { GraduationCap } from "lucide-react";
 
-// Flat list for the marquee ribbon.
-const marquee = Array.from(
-  new Set(CV.skills.flatMap((g) => g.items))
-).filter((s) => !s.includes("("));
-
+/** Full skill inventory from the résumé, grouped by category, a marquee, and the education line. */
 export function Skills() {
   return (
-    <section
-      id="skills"
-      className="scroll-mt-24 border-t border-border/60 px-6 py-24 md:px-10 md:py-32"
-    >
-      <div className="mx-auto w-full max-w-content">
-        <Reveal className="mb-14 max-w-2xl">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent">
-            Toolkit
-          </p>
-          <h2 className="font-display text-3xl font-bold tracking-tight text-fg md:text-5xl">
-            Skills &amp; stack
-          </h2>
+    <section id="skills" className="scroll-mt-16 border-b border-border">
+      <div className="container-x pt-16 md:pt-24">
+        <Reveal>
+          <p className="eyebrow text-muted">Toolkit</p>
         </Reveal>
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-6">
+          <TextReveal text="Skills & stack." className="display text-4xl text-fg sm:text-5xl md:text-6xl" />
+          <Reveal delay={0.4}>
+            <SectionLabel>Everything on the résumé.</SectionLabel>
+          </Reveal>
+        </div>
 
-        <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="mt-10 grid gap-4 pb-16 sm:grid-cols-2 lg:grid-cols-3 md:mt-14 md:pb-20" stagger={0.1}>
           {CV.skills.map((group) => (
-            <StaggerItem key={group.category} className="card p-6">
-              <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-accent">
-                {group.category}
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {group.items.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-lg border border-border bg-bg/50 px-2.5 py-1 text-sm text-fg/90"
-                  >
-                    {skill}
-                  </span>
+            <StaggerItem key={group.category} as="article" className="card flex flex-col p-5 sm:p-6">
+              <h3 className="eyebrow text-accent">{group.category}</h3>
+              <Stagger as="ul" className="mt-4 flex flex-wrap gap-2" stagger={0.045} delayChildren={0.2}>
+                {group.items.map((item) => (
+                  <StaggerItem key={item} as="li" variant="pop">
+                    <SkillChip label={item} />
+                  </StaggerItem>
                 ))}
-              </div>
+              </Stagger>
             </StaggerItem>
           ))}
         </Stagger>
       </div>
 
-      {/* Full-bleed marquee ribbon */}
-      <div className="marquee-group relative mt-16 flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_10%,#000_90%,transparent)]">
-        <div className="animate-marquee flex shrink-0 items-center gap-8 pr-8">
-          {[...marquee, ...marquee].map((skill, i) => (
-            <span
-              key={i}
-              className="font-display text-2xl font-semibold text-muted/40 transition-colors hover:text-accent md:text-3xl"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
+      <SkillsMarquee />
+
+      <div className="border-t border-border">
+        <Reveal className="container-x flex flex-wrap items-center gap-x-8 gap-y-3 py-6">
+          <p className="eyebrow text-muted">Education</p>
+          <GraduationCap className="h-4 w-4 text-muted" aria-hidden="true" />
+          <p className="text-sm text-fg">
+            {CV.education.shortDegree}
+            <span className="mx-3 text-border">·</span>
+            {CV.education.shortSchool}
+            <span className="mx-3 text-border">·</span>
+            {CV.education.year}
+          </p>
+        </Reveal>
       </div>
     </section>
   );

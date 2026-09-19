@@ -8,7 +8,7 @@ interface ButtonProps {
   external?: boolean;
   download?: boolean;
   variant?: "solid" | "outline" | "ghost";
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
   icon?: LucideIcon;
   iconRight?: LucideIcon;
   className?: string;
@@ -34,19 +34,18 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const baseStyles =
-    "group inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50";
+    "group inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50";
 
   const variants = {
-    solid:
-      "bg-accent text-bg shadow-lg shadow-accent/20 hover:shadow-accent/40 hover:-translate-y-0.5",
-    outline:
-      "border border-border bg-surface/40 text-fg hover:border-accent/50 hover:text-accent hover:-translate-y-0.5",
+    solid: "bg-accent text-accent-ink hover:bg-fg",
+    outline: "border border-fg/25 text-fg hover:border-fg/60 hover:bg-fg/5",
     ghost: "text-muted hover:text-fg",
   };
 
   const sizes = {
-    sm: "px-4 py-2 text-sm",
-    md: "px-6 py-3 text-[0.95rem]",
+    sm: "px-3.5 py-2 text-sm",
+    md: "px-5 py-2.5 text-[0.95rem]",
+    lg: "px-6 py-3.5 text-base",
   };
 
   const classes = cn(baseStyles, variants[variant], sizes[size], className);
@@ -57,7 +56,7 @@ export function Button({
       {children}
       {IconRight && (
         <IconRight
-          className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+          className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"
           aria-hidden="true"
         />
       )}
@@ -84,13 +83,7 @@ export function Button({
   }
 
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={classes}
-      {...rest}
-    >
+    <button type={type} onClick={onClick} disabled={disabled} className={classes} {...rest}>
       {content}
     </button>
   );

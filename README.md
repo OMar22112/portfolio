@@ -1,6 +1,6 @@
 # Omar Abo-Elmaaty — Portfolio
 
-Personal portfolio site for **Omar Abo-Elmaaty**, a Full-Stack Developer (front-end focused) specializing in React, Next.js, and TypeScript.
+Personal portfolio site for **Omar Abo-Elmaaty**, a Full-Stack Engineer building production AI applications with React, Next.js, TypeScript, and Node/FastAPI backends.
 
 Live: **https://portfolio-azure-eight-54.vercel.app**
 
@@ -8,8 +8,9 @@ Live: **https://portfolio-azure-eight-54.vercel.app**
 
 - ⚡️ **Next.js 14 (App Router)** + **TypeScript** + **Tailwind CSS**
 - 🎬 Motion-first design with **Framer Motion** (scroll reveals, staggered entrances) — fully `prefers-reduced-motion` safe
-- 🌌 Cinematic dark UI: ambient glow, glassmorphism, dot-grid background
-- 🤖 **AI portfolio assistant** — answers questions about my work, powered by the Anthropic Claude API with a graceful CV-based fallback when no API key is set
+- 🖤 Editorial dark UI: warm near-black, sage accent, real product screenshots in light "browser" frames
+- 🗂 Content lives in one place: `lib/data.ts` (mirrors the résumé); screenshots in `public/images`
+- 🤖 **Portfolio assistant** — answers questions about my work from a local CV knowledge base (no API key required)
 - ♿️ Accessible: skip links, ARIA labels, keyboard nav, SEO/OpenGraph metadata
 - 📱 Responsive from 375px up
 

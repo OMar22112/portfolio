@@ -1,54 +1,54 @@
 import { CV } from "@/lib/data";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
+import { Reveal, Stagger, StaggerItem, TextReveal } from "@/components/motion/Reveal";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 export function Experience() {
   return (
-    <section
-      id="experience"
-      className="scroll-mt-24 border-t border-border/60 px-6 py-24 md:px-10 md:py-32"
-    >
-      <div className="mx-auto w-full max-w-content">
-        <Reveal className="mb-14 max-w-2xl">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent">
-            Career
-          </p>
-          <h2 className="font-display text-3xl font-bold tracking-tight text-fg md:text-5xl">
-            Experience
-          </h2>
+    <section id="experience" className="scroll-mt-16 border-b border-border py-16 md:py-24">
+      <div className="container-x">
+        <Reveal>
+          <div className="flex items-center justify-between gap-6">
+            <p className="eyebrow text-muted">Experience</p>
+            <SectionLabel>Real experience. Real context.</SectionLabel>
+          </div>
         </Reveal>
 
-        <Stagger className="relative ml-1 border-l border-border pl-8 md:pl-10">
-          {CV.experience.map((job, index) => (
-            <StaggerItem key={index} as="div" className="relative mb-14 last:mb-0">
-              <span className="absolute -left-[41px] top-1.5 flex h-4 w-4 items-center justify-center md:-left-[49px]">
-                <span
-                  className={`h-3 w-3 rounded-full ring-4 ring-bg ${
-                    job.current ? "bg-accent" : "bg-muted"
-                  }`}
-                />
-                {job.current && (
-                  <span className="absolute h-3 w-3 animate-ping rounded-full bg-accent opacity-60" />
-                )}
-              </span>
+        <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <TextReveal
+              text={`Building at ${CV.company}.`}
+              className="display text-4xl text-fg text-balance sm:text-5xl md:text-6xl"
+            />
+            <Reveal delay={0.35} blur>
+              <p className="mt-6 max-w-md leading-relaxed text-muted text-pretty">{CV.about}</p>
+            </Reveal>
+          </div>
 
-              <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                <h3 className="font-display text-xl font-bold text-fg">{job.title}</h3>
-                <span className="font-mono text-sm text-accent">{job.dates}</span>
-              </div>
-              <p className="mb-5 mt-1 text-muted">
-                {job.company} · {job.location}
-              </p>
-              <ul className="space-y-3">
-                {job.bullets.map((bullet, i) => (
-                  <li key={i} className="flex gap-3 text-[0.95rem] leading-relaxed text-muted">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/70" />
-                    <span>{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-            </StaggerItem>
-          ))}
-        </Stagger>
+          <Stagger as="ol" className="divide-y divide-border border-y border-border" stagger={0.15} delayChildren={0.2}>
+            {CV.experience.map((job) => (
+              <StaggerItem key={job.title} as="li" className="py-6">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 className="font-semibold text-fg">{job.title}</h3>
+                  <span aria-hidden="true" className="text-border">|</span>
+                  <p className="text-sm text-muted">{job.dates}</p>
+                </div>
+                <p className="mt-1 text-sm text-muted">
+                  {job.company}
+                  <span className="mx-2 text-border">·</span>
+                  {job.location}
+                </p>
+                <Stagger as="ul" className="mt-4 space-y-2" stagger={0.06} delayChildren={0.15}>
+                  {job.bullets.slice(0, job.current ? 4 : 2).map((b) => (
+                    <StaggerItem key={b} as="li" className="flex gap-3 text-sm leading-relaxed text-muted">
+                      <span aria-hidden="true" className="mt-[0.6rem] h-px w-3 shrink-0 bg-muted/60" />
+                      <span className="text-pretty">{b}</span>
+                    </StaggerItem>
+                  ))}
+                </Stagger>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
       </div>
     </section>
   );

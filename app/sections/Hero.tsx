@@ -1,109 +1,148 @@
 "use client";
 
+import Image from "next/image";
+import { useRef } from "react";
 import { CV } from "@/lib/data";
 import { Button } from "@/components/ui/Button";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Github, Linkedin, MapPin } from "lucide-react";
-
-const ease = [0.16, 1, 0.3, 1] as const;
+import { EASE, TextReveal } from "@/components/motion/Reveal";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ArrowDownRight } from "lucide-react";
 
 export function Hero() {
   const reduce = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
 
-  const container = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
-  };
-  const item = {
-    hidden: { opacity: 0, y: reduce ? 0 : 18 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
-  };
+  // Gentle parallax: monogram drifts down, portrait drifts up as the hero scrolls away.
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const monogramY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 120]);
+  const photoY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -50]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 40]);
+  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0.25]);
+
+  const fadeUp = (delay: number) => ({
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: 18, filter: "blur(4px)" },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+    transition: { duration: 0.8, ease: EASE, delay },
+  });
+
+  const noteLines = CV.motto.split(", ");
 
   return (
     <section
       id="hero"
-      className="relative flex min-h-[100svh] items-center overflow-hidden px-6 pb-16 pt-28 md:px-10"
+      ref={ref}
+      className="relative overflow-hidden border-b border-border pt-28 md:pt-32"
     >
-      {/* Aurora glows */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="aurora absolute -left-40 top-0 h-[38rem] w-[38rem] rounded-full bg-accent/20 blur-[120px]" />
-        <div
-          className="aurora absolute -right-40 top-20 h-[34rem] w-[34rem] rounded-full bg-accent-2/20 blur-[120px]"
-          style={{ animationDelay: "-8s" }}
-        />
+      <div className="container-x grid items-end gap-12 pb-16 md:pb-20 lg:grid-cols-[1.15fr_1fr] lg:gap-8">
+        <motion.div style={{ y: textY, opacity: fade }} className="relative z-10">
+          <motion.p {...fadeUp(0.1)} className="eyebrow text-accent">
+            {CV.title} <span className="mx-1 text-muted">/</span> {CV.focus}
+          </motion.p>
+
+          <TextReveal
+            as="h1"
+            text={CV.headline}
+            inView={false}
+            delay={0.25}
+            stagger={0.09}
+            className="display mt-6 text-[2.9rem] text-fg sm:text-6xl md:text-7xl lg:text-[5.4rem]"
+          />
+
+          <motion.p
+            {...fadeUp(0.7)}
+            className="mt-7 max-w-xl text-lg leading-relaxed text-muted text-pretty md:text-xl"
+          >
+            {CV.tagline}
+          </motion.p>
+
+          <motion.div
+            {...fadeUp(0.85)}
+            className="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8"
+          >
+            <Button href="#work" size="lg" iconRight={ArrowDownRight}>
+              Explore my work
+            </Button>
+            <p className="text-sm text-muted">
+              Currently at <span className="text-fg">{CV.company}</span>
+              <span className="mx-2.5 text-border">·</span>
+              Based in {CV.location}
+            </p>
+          </motion.div>
+        </motion.div>
+
+        {/* Portrait with monogram watermark and handwritten note */}
+        <div className="relative flex w-full items-end justify-center gap-5 lg:justify-end lg:gap-8">
+          <motion.span
+            aria-hidden="true"
+            style={{ y: monogramY }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.6, ease: EASE, delay: 0.3 }}
+            className="display pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[11rem] leading-[0.8] text-fg/[0.05] sm:text-[15rem] lg:left-auto lg:right-24 lg:translate-x-0 lg:text-[19rem]"
+          >
+            {CV.initials}
+          </motion.span>
+
+          <motion.div
+            style={{ y: photoY }}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 30, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1.1, ease: EASE, delay: 0.45 }}
+            className="relative z-10"
+          >
+            <Image
+              src={CV.photo.src}
+              alt={CV.photo.alt}
+              width={896}
+              height={1195}
+              priority
+              sizes="(min-width: 1024px) 304px, 256px"
+              className="h-72 w-[13.5rem] rounded-2xl object-cover object-top ring-1 ring-white/10 sm:h-80 sm:w-60 lg:h-[24rem] lg:w-[18rem]"
+            />
+          </motion.div>
+
+          <p
+            aria-hidden="true"
+            className="relative z-10 mb-8 hidden w-28 -rotate-[14deg] font-hand text-2xl leading-[1.05] text-muted sm:block lg:mb-10 lg:w-32 lg:text-3xl"
+          >
+            {noteLines.map((line, i) => (
+              <motion.span
+                key={line}
+                className="block"
+                initial={{ opacity: 0, x: reduce ? 0 : -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, ease: EASE, delay: 1.1 + i * 0.22 }}
+              >
+                {line}
+                {i < noteLines.length - 1 ? "," : ""}
+              </motion.span>
+            ))}
+            <svg
+              viewBox="0 0 64 24"
+              className="mt-1 h-5 w-14 text-muted"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <motion.path
+                d="M2 4c14 16 32 18 58 8"
+                initial={{ pathLength: reduce ? 1 : 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeInOut", delay: 1.8 }}
+              />
+              <motion.path
+                d="M52 6l8 6-9 5"
+                initial={{ pathLength: reduce ? 1 : 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.35, ease: "easeOut", delay: 2.5 }}
+              />
+            </svg>
+          </p>
+        </div>
       </div>
-
-      <motion.div
-        className="mx-auto w-full max-w-content"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        {/* Availability badge */}
-        <motion.div variants={item} className="mb-8">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/50 px-4 py-1.5 text-sm text-muted backdrop-blur">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            {CV.availability}
-            <span className="mx-1 h-3 w-px bg-border" />
-            <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-            {CV.location}
-          </span>
-        </motion.div>
-
-        <motion.h1
-          variants={item}
-          className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-[5.5rem]"
-        >
-          <span className="text-fg">{CV.name}</span>
-        </motion.h1>
-
-        <motion.div
-          variants={item}
-          className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-display text-2xl font-semibold sm:text-3xl md:text-4xl"
-        >
-          <span className="text-accent-gradient">{CV.title}</span>
-          <span className="hidden text-muted sm:inline">—</span>
-          <span className="text-muted">front-end focused, building with AI</span>
-        </motion.div>
-
-        <motion.p
-          variants={item}
-          className="mt-7 max-w-2xl text-lg leading-relaxed text-muted text-pretty"
-        >
-          {CV.tagline}
-        </motion.p>
-
-        <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-3">
-          <Button href="#work" iconRight={ArrowUpRight}>
-            View my work
-          </Button>
-          <Button href={CV.contact.linkedin} external variant="outline" icon={Linkedin}>
-            LinkedIn
-          </Button>
-          <Button href={CV.contact.github} external variant="outline" icon={Github}>
-            GitHub
-          </Button>
-        </motion.div>
-
-        {/* Inline stat row */}
-        <motion.dl
-          variants={item}
-          className="mt-14 grid max-w-3xl grid-cols-2 gap-x-6 gap-y-8 border-t border-border pt-8 sm:grid-cols-4"
-        >
-          {CV.stats.map((stat) => (
-            <div key={stat.label}>
-              <dt className="sr-only">{stat.label}</dt>
-              <dd className="font-display text-3xl font-bold text-fg md:text-4xl">
-                {stat.value}
-              </dd>
-              <p className="mt-1 text-sm text-muted">{stat.label}</p>
-            </div>
-          ))}
-        </motion.dl>
-      </motion.div>
+      <p className="sr-only">{CV.motto}</p>
     </section>
   );
 }

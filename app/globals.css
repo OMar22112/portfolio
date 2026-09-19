@@ -3,15 +3,17 @@
 @tailwind utilities;
 
 :root {
-  /* Signature palette — deep near-black + electric cyan/indigo glow */
-  --bg: 6 8 15; /* #06080F */
-  --bg-soft: 10 13 24; /* #0A0D18 */
-  --surface: 15 19 32; /* #0F1320 */
-  --border: 30 37 56; /* #1E2538 */
-  --fg: 237 242 251; /* #EDF2FB */
-  --muted: 148 161 186; /* #94A1BA */
-  --accent: 34 211 238; /* cyan-400 */
-  --accent-2: 129 140 248; /* indigo-400 */
+  /* Editorial dark palette: warm near-black, bone-white type, sage accent */
+  --bg: 14 16 15; /* #0E100F */
+  --bg-soft: 18 21 19; /* #121513 */
+  --surface: 22 25 23; /* #161917 */
+  --surface-2: 28 32 30; /* #1C201E */
+  --border: 38 43 40; /* #262B28 */
+  --fg: 243 244 241; /* #F3F4F1 */
+  --muted: 158 166 160; /* #9EA6A0 */
+  --accent: 185 219 176; /* #B9DBB0 sage */
+  --accent-ink: 14 16 15; /* text on accent */
+  --paper: 249 250 248; /* #F9FAF8 mock UI surfaces */
 }
 
 * {
@@ -20,7 +22,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 5rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -42,32 +44,18 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "cv11", "ss01", "liga";
 }
 
-/* Ambient background: dot grid + subtle radial glows, fixed behind content */
+/* Very faint film grain so large dark areas do not band */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -2;
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgb(var(--border) / 0.5) 1px,
-    transparent 0
-  );
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background:
-    radial-gradient(600px circle at 12% 8%, rgb(var(--accent) / 0.1), transparent 45%),
-    radial-gradient(700px circle at 88% 18%, rgb(var(--accent-2) / 0.1), transparent 45%);
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @layer utilities {
@@ -79,93 +67,57 @@ body::after {
   }
 
   .container-x {
-    @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+    @apply mx-auto w-full max-w-content px-5 sm:px-8 md:px-10;
   }
 
-  /* Accent gradient text */
-  .text-gradient {
-    background: linear-gradient(
-      100deg,
-      rgb(var(--fg)) 0%,
-      rgb(var(--fg)) 55%,
-      rgb(var(--accent)) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  /* Small-caps mono label used for section eyebrows */
+  .eyebrow {
+    @apply font-mono text-[0.68rem] font-medium uppercase tracking-[0.22em];
   }
 
-  .text-accent-gradient {
-    background: linear-gradient(100deg, rgb(var(--accent)), rgb(var(--accent-2)));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  /* Big display headline */
+  .display {
+    @apply font-display font-bold tracking-[-0.03em] leading-[0.98];
   }
 
-  /* Frosted glass surface */
-  .glass {
-    background-color: rgb(var(--surface) / 0.6);
-    backdrop-filter: blur(12px) saturate(140%);
-    -webkit-backdrop-filter: blur(12px) saturate(140%);
-  }
-
-  /* Card with subtle top sheen + hover glow */
   .card {
-    position: relative;
-    background-color: rgb(var(--surface) / 0.6);
-    border: 1px solid rgb(var(--border));
-    border-radius: 1rem;
-    transition: border-color 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+    @apply relative rounded-2xl border border-border bg-surface;
+    transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
   }
   .card:hover {
-    border-color: rgb(var(--accent) / 0.4);
-    background-color: rgb(var(--surface) / 0.9);
+    border-color: rgb(var(--muted) / 0.45);
   }
 
-  /* Thin gradient hairline separators */
   .hairline {
     height: 1px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgb(var(--border)),
-      transparent
-    );
+    background: rgb(var(--border));
   }
 
-  .glow-accent {
-    box-shadow: 0 0 40px -12px rgb(var(--accent) / 0.5);
+  .glass {
+    background-color: rgb(var(--bg) / 0.8);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
   }
-}
 
-/* Animated aurora blobs for the hero */
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
+  /* Screenshot frame: light "browser window" on the dark card */
+  .shot {
+    @apply overflow-hidden rounded-xl border border-white/10 bg-paper;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.06) inset,
+      0 24px 48px -24px rgb(0 0 0 / 0.7);
   }
-  50% {
-    transform: translate3d(4%, -3%, 0) scale(1.15);
-  }
-}
-.aurora {
-  animation: drift 16s ease-in-out infinite;
-  will-change: transform;
-}
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
+  .link-underline {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+    text-decoration-color: rgb(var(--muted) / 0.6);
+    transition: text-decoration-color 0.2s ease, color 0.2s ease;
   }
-  to {
-    transform: translateX(-50%);
+  .link-underline:hover {
+    text-decoration-color: rgb(var(--accent));
+    color: rgb(var(--fg));
   }
-}
-.animate-marquee {
-  animation: marquee 32s linear infinite;
-}
-.marquee-group:hover .animate-marquee {
-  animation-play-state: paused;
 }
 
 /* Custom scrollbar */
@@ -186,6 +138,56 @@ body::after {
 }
 
 ::selection {
-  background: rgb(var(--accent) / 0.25);
+  background: rgb(var(--accent) / 0.35);
   color: rgb(var(--fg));
+}
+
+/* Seamless marquee: the wrapper holds two identical tracks and moves exactly one track width */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee {
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+.marquee-track {
+  animation: marquee 60s linear infinite;
+  will-change: transform;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  .marquee-track > ul:last-child {
+    display: none;
+  }
+}
+
+/* Hover treatments handed to CSS after the entrance animation */
+.card-link {
+  transition: border-color 0.3s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+}
+.card-link:hover {
+  transform: translateY(-3px);
+}
+.shot img,
+.shot-zoom {
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .shot img,
+.group:hover .shot-zoom {
+  transform: scale(1.025);
 }

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-// Favicon / browser-tab logo — a gradient "O" monogram.
+// Favicon / browser-tab logo: "OA" monogram on the sage accent.
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
@@ -14,15 +14,16 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #22D3EE 0%, #818CF8 100%)",
-          borderRadius: 8,
-          color: "#0A0A0F",
-          fontSize: 22,
-          fontWeight: 700,
+          background: "#B9DBB0",
+          borderRadius: 7,
+          color: "#0E100F",
+          fontSize: 15,
+          fontWeight: 800,
+          letterSpacing: -1,
           fontFamily: "sans-serif",
         }}
       >
-        O
+        OA
       </div>
     ),
     { ...size }

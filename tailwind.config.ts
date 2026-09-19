@@ -15,19 +15,22 @@ const config: Config = {
         bg: withOpacity("--bg"),
         "bg-soft": withOpacity("--bg-soft"),
         surface: withOpacity("--surface"),
+        "surface-2": withOpacity("--surface-2"),
         border: withOpacity("--border"),
         fg: withOpacity("--fg"),
         muted: withOpacity("--muted"),
         accent: withOpacity("--accent"),
-        "accent-2": withOpacity("--accent-2"),
+        "accent-ink": withOpacity("--accent-ink"),
+        paper: withOpacity("--paper"),
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-space-grotesk)", "var(--font-inter)", "sans-serif"],
+        display: ["var(--font-inter-tight)", "var(--font-inter)", "sans-serif"],
         mono: ["var(--font-jetbrains-mono)", "ui-monospace", "monospace"],
+        hand: ["var(--font-caveat)", "cursive"],
       },
       maxWidth: {
-        content: "72rem",
+        content: "76rem",
       },
       keyframes: {
         "fade-up": {
