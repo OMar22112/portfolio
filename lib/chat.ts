@@ -77,6 +77,9 @@ const intents = [
 ];
 
 const projectKeywords: Record<string, string> = {
+  wimmo: "Wimmo",
+  "focus app": "Wimmo",
+  "google play": "Wimmo",
   arator: "Arator",
   "ai employee": "Arator",
   opener: "Opener",

@@ -85,6 +85,24 @@ export const CV = {
   ],
   projects: [
     {
+      slug: "wimmo",
+      name: "Wimmo",
+      kicker: "Focus app, live on Google Play",
+      tagline: "Offline-first focus app that turns a vague task into small first steps.",
+      summary: "Offline-first React Native focus app with a Gemini planner, live on Google Play.",
+      tech: ["React Native", "Expo", "TypeScript", "AWS", "Gemini", "RevenueCat"],
+      techShort: ["React Native", "AWS", "Gemini"],
+      date: "Oct 2026",
+      tier: "card",
+      preview: "https://play.google.com/store/apps/details?id=ai.nexarlabs.focus",
+      bullets: [
+        "Shipped an offline-first React Native app to Google Play with on-device SQLite and English/Arabic RTL.",
+        "Built a Gemini (Vertex AI) planner behind an AWS Lambda proxy that turns a vague task into small first steps, with a validator that rejects malformed plans.",
+        "Integrated Google Play Billing and RevenueCat, with access decided on the server from verified store webhooks.",
+        "Built the AWS backend (Lambda, DynamoDB, Cognito, SES) with 182 server tests and a daily ops email of installs, crashes and AI cost.",
+      ],
+    },
+    {
       slug: "arator",
       name: "Arator",
       kicker: "AI employee platform",
@@ -295,19 +313,19 @@ export const CV = {
     },
     {
       category: "Frontend Frameworks",
-      items: ["React.js", "Next.js (SSR/SSG)", "Redux Toolkit", "Context API", "Tailwind CSS", "jQuery"],
+      items: ["React.js", "Next.js (SSR/SSG)", "React Native", "Expo", "Redux Toolkit", "Context API", "Tailwind CSS", "jQuery"],
     },
     {
       category: "Backend / APIs",
-      items: ["Node.js", "Express.js", "Flask", "FastAPI", "RESTful APIs", "GraphQL", "tRPC"],
+      items: ["Node.js", "Express.js", "Flask", "FastAPI", "RESTful APIs", "GraphQL", "tRPC", "AWS", "RevenueCat"],
     },
     {
       category: "Auth & Database",
-      items: ["Supabase", "Firebase", "JWT", "Protected Routes", "PostgreSQL", "Prisma", "Better Auth"],
+      items: ["Supabase", "Firebase", "JWT", "Protected Routes", "PostgreSQL", "Prisma", "Better Auth", "SQLite"],
     },
     {
       category: "AI & Automation",
-      items: ["Anthropic Claude", "CopilotKit", "Playwright", "n8n", "TanStack Query"],
+      items: ["Anthropic Claude", "Gemini", "CopilotKit", "Playwright", "n8n", "TanStack Query"],
     },
     {
       category: "Developer Tools",

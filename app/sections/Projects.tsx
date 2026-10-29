@@ -24,7 +24,29 @@ function TechRow({ tech, className = "" }: { tech: string[]; className?: string 
   );
 }
 
+/** Hand-built CSS mocks for projects that have no screenshot yet. */
+const MOCKS: Record<string, () => JSX.Element> = {
+  "excel-smart": ExcelSmartMock,
+};
+
+/** Typographic tile for projects with neither a screenshot nor a mock. */
+function PlaceholderShot({ project }: { project: Project }) {
+  return (
+    <div className="relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-surface-2 p-6 text-center">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgb(var(--accent)/0.14),transparent_65%)]"
+      />
+      <div className="shot-zoom relative">
+        <p className="display text-4xl text-fg sm:text-5xl">{project.name}</p>
+        <p className="eyebrow mt-4 text-accent">{project.kicker}</p>
+      </div>
+    </div>
+  );
+}
+
 function Shot({ project, sizes, delay = 0 }: { project: Project; sizes: string; delay?: number }) {
+  const Mock = MOCKS[project.slug];
   return (
     <ClipReveal delay={delay}>
       {project.image ? (
@@ -38,10 +60,12 @@ function Shot({ project, sizes, delay = 0 }: { project: Project; sizes: string; 
             className="h-full w-full object-cover object-top"
           />
         </div>
-      ) : (
+      ) : Mock ? (
         <div className="shot-zoom">
-          <ExcelSmartMock />
+          <Mock />
         </div>
+      ) : (
+        <PlaceholderShot project={project} />
       )}
     </ClipReveal>
   );
@@ -174,7 +198,9 @@ function WideCard({ project }: { project: Project }) {
 }
 
 export function Projects() {
-  const [cardA, cardB, wide] = cardProjects;
+  // Cards fill a two-column grid; an odd one out at the end gets the full-width layout.
+  const wide = cardProjects.length % 2 === 1 ? cardProjects[cardProjects.length - 1] : undefined;
+  const gridCards = wide ? cardProjects.slice(0, -1) : cardProjects;
   const total = 1 + cardProjects.length;
 
   return (
@@ -199,7 +225,7 @@ export function Projects() {
           </Reveal>
 
           <Stagger className="grid gap-5 lg:grid-cols-2" stagger={0.15}>
-            {[cardA, cardB].map((p) => (
+            {gridCards.map((p) => (
               <StaggerItem key={p.slug} as="article" className="h-full">
                 <GridCard project={p} />
               </StaggerItem>
